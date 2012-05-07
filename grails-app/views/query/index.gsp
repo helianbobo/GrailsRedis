@@ -3,16 +3,78 @@
 <head>
     <title>Redis</title>
     <meta name="layout" content="main">
-    <script type="text/javascript" src="${resource(dir: 'js', file: 'highcharts.js')}"></script>
+    <r:require module="query"/>
 </head>
 
 <body>
 
 <div>
+
+    <script type="text/javascript">
+        function renderChart(data) {
+            new Highcharts.Chart({
+                chart:{
+                    renderTo:'chart',
+                    defaultSeriesType:'bar',
+                    zoomType:'x'
+                },
+                title:{
+                    text:'',
+                    x:-20 //center
+                },
+
+                xAxis:{
+                    categories:data.xAxis
+                },
+                yAxis:{
+                    title:{
+                        text:'Buzz'
+                    },
+                    plotLines:[
+                        {
+                            value:0,
+                            width:1,
+                            color:'#808080'
+                        }
+                    ]
+                },
+                tooltip:{
+                    formatter:function () {
+                        return '<b>' + this.series.name + '</b><br/>' +
+                                this.x + ': ' + this.y + '';
+                    }
+                },
+
+                plotOptions:{
+                    series:{
+                        stacking:'normal',
+
+                        /* trigger dialog event*/
+                        enableMouseTracking:true,
+                        point:{
+                            enableMouseTracking:true,
+                            events:{
+                                click:function (event) {
+
+                                }
+                            }
+                        }
+
+                    }
+                },
+                legend:{
+                    borderWidth:0
+                },
+
+                series:data.series
+            });
+        }
+    </script>
+
     <g:if test="${flash.message}">
         <div class="message" role="status">${flash.message}</div>
     </g:if>
-    <g:form>
+    <g:formRemote url="[action: 'query']" name="queryForm" onSuccess="renderChart(data)" asynchronous="true">
         <fieldset class="form">
             <div class="fieldcontain">
                 <label for="from_date">From</label>
@@ -41,12 +103,13 @@
         </fieldset>
 
         <fieldset class="buttons">
-            <g:actionSubmit class="save" action="query" value="query"/>
+            <input value="Query" type="submit" class="save"/>
+            %{--<g:actionSubmit class="save" action="query" value="query"/>--}%
         </fieldset>
-    </g:form>
+    </g:formRemote>
 </div>
 
-<div>
+<div id="chart">
 
 </div>
 

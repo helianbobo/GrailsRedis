@@ -4,6 +4,7 @@ import com.brandtology.KeyHelper
 import com.brandtology.DateHelper
 import redis.clients.jedis.Jedis
 import org.springframework.util.StopWatch
+import grails.converters.JSON
 
 class QueryController {
 
@@ -39,7 +40,12 @@ class QueryController {
         println "${keys.size()} keys"
         println stopWatch.prettyPrint()
 
-        flash.message = "${keys.size()} keys"
-        redirect(action: 'index')
+        def result = [:]
+        result.xAxis = []
+        result.series = []
+
+        response.contentType = 'application/json'
+        render '''{"xAxis":["General Mention","Retail Variety"],"series":[{"name":"Very Positive","data":[17,35]},{"name":"Positive","data":[4,5]},{"name":"Neutral","data":[502,52]},{"name":"Negative","data":[4,5]},{"name":"Very Negative","data":[2,7]}],"xAxisInfo":[4345,4346]}'''
+//        render result as JSON
     }
 }
