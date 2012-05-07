@@ -88,7 +88,7 @@
 
             <div class="fieldcontain">
                 <label for="sentiment">Sentiment</label>
-                <g:textField name="sentiment" value="P,VP"/>
+                <g:textField name="sentiment" value="VP,P,NE,N,VN"/>
             </div>
 
             <div class="fieldcontain">

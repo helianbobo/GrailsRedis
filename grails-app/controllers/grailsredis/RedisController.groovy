@@ -26,34 +26,30 @@ class RedisController {
         def from = params.from_date
         def to = params.to_date
 
-        def count = Ticket.countByDatetimePostedBetween(from, to)
-        def current = 0
 
-        ExecutorService exec = Executors.newFixedThreadPool(10);
+        def total = 0
 
-        while (current < count) {
+        def start = System.currentTimeMillis()
 
+        while(!from.after(to)){
+            def current = 0
+            def count = Ticket.countByDatetimePostedBetween(from, from.plus(1))
+            while (current < count) {
 
-            def list = hqlQuery(from, to, 100000, current)
+                def list = hqlQuery(from, from.plus(1), 30000, current)
 
+                pushToRedis(list)
 
-            exec.execute(new Runnable() {
-                @Override
-                void run() {
+                current += list.size()
+                println "Date: $from   $current/$count tickets processed. Time used:${System.currentTimeMillis() - start}"
 
-                    pushToRedis(list)
-
-                }
-            })
-
-
-            current += list.size()
-            println "$current/$count tickets processed."
-
+            }
+            from = from.plus(1)
+            total += count
         }
 
 
-        flash.message = "${current} processed"
+        flash.message = "${total} processed"
         redirect(action: 'index')
     }
 
@@ -65,7 +61,7 @@ class RedisController {
         datetimePosted <= ?
         """
 
-        Ticket.executeQuery(hql, [from, to], [max: 100000, offset: offset])
+        Ticket.executeQuery(hql, [from, to], [max: max, offset: offset])
     }
 
     def sqlQuery(from, to, max, offset) {
@@ -91,6 +87,7 @@ select id, datetime_Posted, client_Account_Id, subject_Id, normalised_Sentiment_
         redisService.withPipeline {pipeline ->
             list.each {ticket ->
 
+                def id = ticket[0]
                 def datetimePosted = ticket[1]
                 def clientAccountId = ticket[2]
                 def subjectId = ticket[3]
@@ -104,9 +101,9 @@ select id, datetime_Posted, client_Account_Id, subject_Id, normalised_Sentiment_
                 else if (ticket[4] < 0 && ticket[4] >= -50)
                     sentiment = 'N'
 
-                def key = helper.generateKey(queryName, datetimePosted, subjectId, sentiment)
+                def key = helper.generateKey(clientAccountId, datetimePosted, subjectId, sentiment)
 
-                pipeline.incr(key)
+                pipeline.sadd(key, "$id")
             }
         }
     }
