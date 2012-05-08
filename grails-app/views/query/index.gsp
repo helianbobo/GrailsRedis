@@ -78,12 +78,12 @@
         <fieldset class="form">
             <div class="fieldcontain">
                 <label for="from_date">From</label>
-                <g:datePicker name="from_date" value="${new java.util.Date().minus(2)}" precision="day"/>
+                <g:datePicker name="from_date" value="${new java.util.Date(112,2,1)}" precision="day"/>
             </div>
 
             <div class="fieldcontain">
                 <label for="to_date">To</label>
-                <g:datePicker name="to_date" value="${new java.util.Date().minus(1)}" precision="day"/>
+                <g:datePicker name="to_date" value="${new java.util.Date(112,2,31)}" precision="day"/>
             </div>
 
             <div class="fieldcontain">
@@ -98,7 +98,7 @@
 
             <div class="fieldcontain">
                 <label for="subjectId">Subject</label>
-                <g:textField name="subjectId" value="27065,27066,27067,27068,27069"/>
+                <g:textField name="subjectId" value="27070,27071,27072,27073,27074,34978,36009"/>
             </div>
         </fieldset>
 
