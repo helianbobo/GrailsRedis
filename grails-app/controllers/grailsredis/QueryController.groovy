@@ -19,7 +19,7 @@ class QueryController {
         def keys = []
         def resultMap = [:]
 
-        def helper = new KeyHelper('overview')
+        def helper = new KeyHelper('_overview')
         def days = new DateHelper(params.from_date, params.to_date).generateByDay()
 
         /*params.sentiment.split(',') each {sentiment ->
@@ -37,10 +37,10 @@ class QueryController {
 
 
 
-        keys.each{key->
+        /*keys.each{key->
             resultMap[key] = redisService.scard(key)
         }
-
+*/
         /*redisService.mget(keysArray).eachWithIndex {value, index->
             if(value)
                 resultMap[keysArray[index]] = value
@@ -50,23 +50,42 @@ class QueryController {
 
         def result = [:]
         result.xAxis = []
-        params.subjectId.split(',').each {
+        def subjectIds = params.subjectId.split(',')
+        subjectIds.each {
             result.xAxis << it
         }
 
         result.series = []
-        params.sentiment.split(',').each{sentiment->
+        def sentiments = params.sentiment.split(',')
+
+        def cube = [:]
+
+        sentiments.each{sentiment->
+            cube[sentiment] = [:]
+            subjectIds.each{subjectId->
+                def sum = 0
+                def keyArray = new String[days.size()]
+                days.eachWithIndex{day, index->
+                    def key = helper.generateKey(params.clientAccountId, day, subjectId, sentiment)
+                    keyArray[index] = key
+                }
+                def values = redisService.mget(keyArray)
+
+                values.each{value->
+                    if (value)
+                        sum += Integer.parseInt(value)
+                }
+
+                cube[sentiment][subjectId] = sum
+            }
+        }
+
+        sentiments.each {sentiment->
             def item = [:]
             item.name = sentiment
             item.data = []
-            params.subjectId.split(',').each{subjectId->
-                def sum = 0
-                days.each{day->
-                    def value = redisService.scard(helper.generateKey(params.clientAccountId, day, subjectId, sentiment))
-                    if (value)
-                        sum += value
-                }
-                item.data << sum
+            subjectIds.each{subjectId->
+                item.data << cube[sentiment][subjectId]
             }
             result.series << item
         }
@@ -74,7 +93,6 @@ class QueryController {
         stopWatch.stop()
         println stopWatch.prettyPrint()
         response.contentType = 'application/json'
-//        render '''{"xAxis":["General Mention","Retail Variety"],"series":[{"name":"Very Positive","data":[17,35]},{"name":"Positive","data":[4,5]},{"name":"Neutral","data":[502,52]},{"name":"Negative","data":[4,5]},{"name":"Very Negative","data":[2,7]}],"xAxisInfo":[4345,4346]}'''
         render result as JSON
     }
 }

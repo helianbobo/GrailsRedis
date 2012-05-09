@@ -16,7 +16,7 @@ class KeyHelper {
             dateStr = date
 
 
-        if(queryName == 'overview')
+        if(queryName == 'overview' || queryName == '_overview')
             return "${queryName}:${clientAccountId}:${subjectId}:${dateStr}:${sentiment}"
 
         else return ""

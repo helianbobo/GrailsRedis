@@ -13,9 +13,9 @@ hibernate {
 environments {
     development {
         dataSource {
-//            dbCreate = "create-drop" // one of 'create', 'create-drop', 'update', 'validate', ''
-//            url = "jdbc:h2:mem:devDb;MVCC=TRUE"
-            url = "jdbc:mysql://192.168.51.104/brandtology?useUnicode=true&characterEncoding=UTF-8"
+            dbCreate = "create-drop" // one of 'create', 'create-drop', 'update', 'validate', ''
+            url = "jdbc:h2:mem:devDb;MVCC=TRUE"
+            /*url = "jdbc:mysql://192.168.51.104/brandtology?useUnicode=true&characterEncoding=UTF-8"
             username = 'weijian.tan'
             password = 'weijian'
             //dialect = org.hibernate.dialect.MySQLInnoDBDialect
@@ -25,7 +25,7 @@ environments {
                 validationQuery = "select 1"
                 testWhileIdle = true
                 timeBetweenEvictionRunsMillis = 60000
-            }
+            }*/
         }
     }
     test {
