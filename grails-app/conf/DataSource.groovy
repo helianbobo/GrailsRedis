@@ -13,8 +13,8 @@ hibernate {
 environments {
     development {
         dataSource {
-            dbCreate = "create-drop" // one of 'create', 'create-drop', 'update', 'validate', ''
-            url = "jdbc:h2:mem:devDb;MVCC=TRUE"
+            /*dbCreate = "create-drop" // one of 'create', 'create-drop', 'update', 'validate', ''
+            url = "jdbc:h2:mem:devDb;MVCC=TRUE"*/
             /*url = "jdbc:mysql://192.168.51.104/brandtology?useUnicode=true&characterEncoding=UTF-8"
             username = 'weijian.tan'
             password = 'weijian'
@@ -26,6 +26,13 @@ environments {
                 testWhileIdle = true
                 timeBetweenEvictionRunsMillis = 60000
             }*/
+            dbCreate = "update"
+            url = "jdbc:mysql://localhost:3306/brandtology"
+            username = 'root'
+            password = ''
+//            dialect = org.hibernate.dialect.MySQLInnoDBDialect
+            driverClassName = "com.mysql.jdbc.Driver"
+            pooled = true
         }
     }
     test {

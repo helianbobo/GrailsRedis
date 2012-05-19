@@ -1,7 +1,7 @@
 package grailsredis
 
 class Ticket {
-	Date datetimeCreated
+	/*Date datetimeCreated
 	Date datetimePosted
 	Date datetimeStatus
 	Boolean isArticle
@@ -84,6 +84,6 @@ class Ticket {
 		channelCountry(nullable:true)
 		channelDeepSearch(nullable:true)
 		channelToMonitor(nullable:true)
-	}
+	}*/
 }
 

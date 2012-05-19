@@ -95,4 +95,8 @@ class QueryController {
         response.contentType = 'application/json'
         render result as JSON
     }
+
+    def eval(){
+        render redisService.eval("return redis.call('dbsize')")
+    }
 }

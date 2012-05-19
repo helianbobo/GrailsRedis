@@ -1084,7 +1084,7 @@
          */
         removeEvent = function (el, eventType, handler) {
             // workaround for jQuery issue with unbinding custom events:
-            // http://forum.jquery.com/topic/javascript-error-when-unbinding-a-custom-event-using-jquery-1-4-2
+            // http://forum.jquery.com/topicName/javascript-error-when-unbinding-a-custom-event-using-jquery-1-4-2
             var func = doc.removeEventListener ? 'removeEventListener' : 'detachEvent';
             if (doc[func] && !el[func]) {
                 el[func] = function () {};
